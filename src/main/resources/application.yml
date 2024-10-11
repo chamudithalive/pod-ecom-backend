@@ -1,7 +1,7 @@
 frontend-url: http://localhost:3000
 
 server:
-  port: 80
+  port: 8080
 
 # Database Configuartion
 spring:
