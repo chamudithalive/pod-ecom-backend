@@ -26,8 +26,8 @@ spring:
       max-request-size: 5MB
 
 #Role Id
-role.admin.id: "unique id for admin role"
-role.normal.id: "unique id for normal role"
+role.admin.id: "200"
+role.normal.id: "300"
 
 # Google Login
 googleClientId: "google-client-id"
@@ -52,3 +52,5 @@ aws:
     user-image-path: "user-images/"
     products-image-path: "product-images/"
     categories-image-path: "category-images/"
+
+newPassword: "0000"
