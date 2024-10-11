@@ -1,0 +1,40 @@
+name:  to EC2
+
+on:
+  push:
+    branches:
+      - main  # Trigger on push to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Java
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'temurin'
+        java-version: '17'  # Adjust as needed
+
+    - name: Build Backend
+      run: |
+        ./mvnw clean package -DskipTests
+
+    - name: Deploy to EC2 via SSH
+      run: |
+        scp -o StrictHostKeyChecking=no -i ${{ secrets.EC2_KEY }} target/your-backend-app.jar ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ubuntu/ecom-backend/
+
+        ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_KEY }} ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          cd /home/ubuntu
+
+          # Restart backend with PM2
+          pm2 stop ecom-backend || true
+          pm2 delete ecom-backend || true
+          pm2 start "java -jar /home/ubuntu/ecom-backend/your-backend-app.jar" --name ecom-backend
+
+          pm2 save
+          exit
+        EOF
