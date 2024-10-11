@@ -28,4 +28,4 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
     - name: Execute with Jar
-      run: sudo kill -9 'sudo lsof -t -i:80' & sudo java -jar /home/ubuntu/actions-runner/_work/pod-ecom-backend/pod-ecom-backend/target/
+      run: sudo kill -9 'sudo lsof -t -i:80' & sudo java -jar /home/ubuntu/actions-runner/_work/pod-ecom-backend/pod-ecom-backend/target/QuickPik.jar &
