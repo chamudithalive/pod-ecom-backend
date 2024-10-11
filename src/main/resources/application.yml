@@ -45,6 +45,8 @@ application:
 #AWS S3
 aws:
   s3:
+    accessKey: "AKIA4MTWHBGMS5SJU7PG" 
+    secretKey: "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"
     bucketName: "podecombucket"
     region: "us-east-1"
     user-image-path: "user-images/"
