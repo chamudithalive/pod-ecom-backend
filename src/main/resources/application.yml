@@ -37,18 +37,16 @@ googleSecret: "google-secret"
 application:
   security:
     jwt:
-     secret-key: "secret-key"
-     expiration: "jwt-token-expiry-time"
+     secret-key: "Z1s8Ck#eF@q5D2$gH7"
+     expiration: "3600"
      refresh-token:
-      expiration: "refresh-token-expiry-time"
+      expiration: "604800"
 
 #AWS S3
 aws:
   s3:
-    accessKey: "s3-accessKey"
-    secretKey: "s3-secretKey"
-    bucketName: "s3-bucketName"
-    region: "aws-bucket-region"
-    user-image-path: "s3 bucket directory for storing user images"
-    products-image-path: "s3 bucket directory for storing product images"
-    categories-image-path: "s3 bucket directory for storing category images"
+    bucketName: "podecombucket"
+    region: "us-east-1"
+    user-image-path: "user-images/"
+    products-image-path: "product-images/"
+    categories-image-path: "category-images/"
