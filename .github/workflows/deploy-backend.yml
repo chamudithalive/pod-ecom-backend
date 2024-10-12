@@ -1,4 +1,4 @@
-name: Deploy to EC2 and Setup
+name: Deploy Backend to EC2
 
 on:
   push:
@@ -13,30 +13,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    # Install software and set up the EC2 instance
-    - name: Set up EC2 instance and Deploy Backend
+    # Build the backend (Spring Boot)
+    - name: Build backend
       run: |
-        ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_KEY }} ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-          # Update and install necessary packages
-          sudo apt update && sudo apt upgrade -y
-
-          # Install Java for Spring Boot
-          sudo apt install openjdk-17-jdk -y
-
-          # Install Node.js for Frontend
-          curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-          sudo apt install -y nodejs
-
-          # Install PM2 to manage processes
-          sudo npm install -g pm2
-
-          # Create directories for backend and frontend
-          mkdir -p /home/ubuntu/ecom-backend /home/ubuntu/ecom-frontend
-
-          # Clean any previous PM2 processes
-          pm2 stop all || true
-          pm2 delete all || true
-        EOF
+        ./mvnw clean package -DskipTests
 
     - name: Deploy Backend to EC2
       run: |
@@ -44,8 +24,8 @@ jobs:
 
         ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_KEY }} ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
           cd /home/ubuntu/ecom-backend
+          pm2 stop ecom-backend || true
+          pm2 delete ecom-backend || true
           pm2 start "java -jar /home/ubuntu/ecom-backend/QuickPik.jar" --name ecom-backend
           pm2 save
         EOF
-
-  
