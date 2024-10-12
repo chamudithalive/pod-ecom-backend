@@ -16,10 +16,10 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: '11'  # Change to your Java version
+          java-version: '17'
 
       - name: Build Spring Boot app
-        run: ./mvnw clean package  # Adjust if you're using a different build tool
+        run: ./mvnw clean package
 
       - name: Copy JAR file to EC2
         env:
@@ -40,7 +40,7 @@ jobs:
             sudo apt update -y
             
             # Install Java if not already installed
-            sudo apt install -y openjdk-11-jdk
+            sudo apt install -y openjdk-17-jdk
             
             # Install Node.js and PM2 if not already installed
             sudo npm install -g pm2
