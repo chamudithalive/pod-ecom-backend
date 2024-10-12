@@ -31,7 +31,7 @@ jobs:
           EC2_USER: ${{ secrets.EC2_USER }}        # Your EC2 user (e.g., ubuntu)
           EC2_HOST: ${{ secrets.EC2_HOST }}        # Your EC2 host (IP or DNS)
         run: |
-          scp -i $EC2_SSH_KEY -o StrictHostKeyChecking=no target/your-spring-boot-app.jar $EC2_USER@$EC2_HOST:/home/ubuntu/deployment/backend/
+          scp -i $EC2_SSH_KEY -o StrictHostKeyChecking=no target/QuickPik.jar $EC2_USER@$EC2_HOST:/home/ubuntu/deployment/backend/
 
       - name: Setup EC2 Instance
         env:
@@ -61,6 +61,6 @@ jobs:
         run: |
           ssh -i $EC2_SSH_KEY -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
             # Start the Spring Boot application with PM2
-            pm2 start java --name backend -- /home/ubuntu/deployment/backend/your-spring-boot-app.jar
+            pm2 start java --name backend -- /home/ubuntu/deployment/backend/QuickPik.jar
             pm2 save
           EOF
