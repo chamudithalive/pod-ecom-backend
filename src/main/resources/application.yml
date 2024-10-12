@@ -6,9 +6,9 @@ server:
 # Database Configuartion
 spring:
   datasource:
-    url: jdbc:mysql://db-ecom.ch28ga62if9j.us-east-1.rds.amazonaws.com:3306/db-ecom?createDatabaseIfNotExist=true
+    url: jdbc:mysql://database-ecom.ch28ga62if9j.us-east-1.rds.amazonaws.com:3306/database-ecom?createDatabaseIfNotExist=true
     username: admin
-    password: "bpLolOwHf2A9MSpkL2td"
+    password: "KmZmSWugw6grl2vbfReG"
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 # JPA Configuration
