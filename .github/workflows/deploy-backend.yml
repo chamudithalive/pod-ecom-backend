@@ -3,29 +3,60 @@ name: Deploy Backend to EC2
 on:
   push:
     branches:
-      - main
+      - main  # or your main branch name
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    # Build the backend (Spring Boot)
-    - name: Build backend
-      run: |
-        ./mvnw clean package -DskipTests
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'  # Change to your Java version
 
-    - name: Deploy Backend to EC2
-      run: |
-        scp -o StrictHostKeyChecking=no -i ${{ secrets.EC2_KEY }} target/QuickPik.jar ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ubuntu/ecom-backend/
+      - name: Build Spring Boot app
+        run: ./mvnw clean package  # Adjust if you're using a different build tool
 
-        ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_KEY }} ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-          cd /home/ubuntu/ecom-backend
-          pm2 stop ecom-backend || true
-          pm2 delete ecom-backend || true
-          pm2 start "java -jar /home/ubuntu/ecom-backend/QuickPik.jar" --name ecom-backend
-          pm2 save
-        EOF
+      - name: Copy JAR file to EC2
+        env:
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+        run: |
+          scp -i $EC2_SSH_KEY -o StrictHostKeyChecking=no target/your-spring-boot-app.jar $EC2_USER@$EC2_HOST:/home/ubuntu/deployment/backend/
+
+      - name: Setup EC2 Instance
+        env:
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+        run: |
+          ssh -i $EC2_SSH_KEY -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
+            # Update packages
+            sudo apt update -y
+            
+            # Install Java if not already installed
+            sudo apt install -y openjdk-11-jdk
+            
+            # Install Node.js and PM2 if not already installed
+            sudo npm install -g pm2
+            
+            # Create deployment directories if they don't exist
+            mkdir -p /home/ubuntu/deployment/backend/
+          EOF
+
+      - name: Start Backend with PM2
+        env:
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+        run: |
+          ssh -i $EC2_SSH_KEY -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
+            # Navigate to the backend directory and start the app with PM2
+            pm2 start java --name backend -- /home/ubuntu/deployment/backend/your-spring-boot-app.jar
+            pm2 save
+          EOF
