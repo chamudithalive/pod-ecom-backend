@@ -16,10 +16,11 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: '17'
+          java-version: '17'  # Change to your Java version
+          distribution: 'temurin'  # Add the distribution parameter
 
       - name: Build Spring Boot app
-        run: ./mvnw clean package
+        run: ./mvnw clean package  # Adjust if you're using a different build tool
 
       - name: Copy JAR file to EC2
         env:
